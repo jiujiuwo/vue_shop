@@ -33,8 +33,13 @@
 <script>
 export default {
   name: 'Login',
-  data () {
-    return { loginForm: { userName: '', password: '' } }
+  data() {
+    return {
+      loginForm: {
+        userName: '',
+        password: ''
+      }
+    }
   }
 }
 </script>
@@ -88,6 +93,6 @@ export default {
   bottom: 0;
   width: 100%;
   padding: 0 20px; // 内部间距，上下为0，左右12px
-  box-sizing: border-box; // box-sizing 默认为
+  box-sizing: border-box; // box-sizing 默认为 content
 }
 </style>
