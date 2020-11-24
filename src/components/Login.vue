@@ -6,15 +6,19 @@
         <img src="../assets/logo.png" />
       </div>
       <!-- 登录表单区域 -->
-      <el-form class="login_login_form" v-model="loginForm">
-        <el-form-item>
+      <el-form
+        class="login_login_form"
+        :model="loginForm"
+        :rules="loginLoginFormRules"
+        ref="loginLoginFormRef"
+      >
+        <el-form-item prop="userName">
           <el-input
             prefix-icon="el-icon-user-solid"
-            placeholder="请输入密码"
             v-model="loginForm.userName"
           ></el-input>
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="password">
           <el-input
             prefix-icon="el-icon-lock"
             type="password"
@@ -23,7 +27,7 @@
         </el-form-item>
         <el-form-item class="login_form_btn">
           <el-button type="primary">提交</el-button>
-          <el-button>重置</el-button>
+          <el-button @click="resetForm">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -35,10 +39,29 @@ export default {
   name: 'Login',
   data() {
     return {
+      // 表单数据绑定对象
       loginForm: {
         userName: '',
         password: ''
+      },
+      // 表单验证规则对象
+      loginLoginFormRules: {
+        userName: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 6, max: 25, message: '长度在 6 到 25个字符', trigger: 'blur' }
+        ]
       }
+    }
+  },
+  methods: {
+    // 重置表单数据
+    resetForm() {
+      this.$refs.loginLoginFormRef.resetFields()
+      console.info(this)
     }
   }
 }
