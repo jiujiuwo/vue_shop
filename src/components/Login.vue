@@ -26,7 +26,7 @@
           ></el-input>
         </el-form-item>
         <el-form-item class="login_form_btn">
-          <el-button type="primary">提交</el-button>
+          <el-button type="primary" @click="validateLoginForm">提交</el-button>
           <el-button @click="resetForm">重置</el-button>
         </el-form-item>
       </el-form>
@@ -61,7 +61,13 @@ export default {
     // 重置表单数据
     resetForm() {
       this.$refs.loginLoginFormRef.resetFields()
+      // console.info(this)
+    },
+    validateLoginForm() {
       console.info(this)
+      this.$refs.loginLoginFormRef.validate(validate => {
+        console.info(validate)
+      })
     }
   }
 }
