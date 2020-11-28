@@ -12,10 +12,10 @@
         :rules="loginLoginFormRules"
         ref="loginLoginFormRef"
       >
-        <el-form-item prop="userName">
+        <el-form-item prop="username">
           <el-input
             prefix-icon="el-icon-user-solid"
-            v-model="loginForm.userName"
+            v-model="loginForm.username"
           ></el-input>
         </el-form-item>
         <el-form-item prop="password">
@@ -41,14 +41,14 @@ export default {
     return {
       // 表单数据绑定对象
       loginForm: {
-        userName: '',
-        password: ''
+        username: 'admin  ',
+        password: '123456'
       },
       // 表单验证规则对象
       loginLoginFormRules: {
-        userName: [
+        username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
-          { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' }
+          { min: 5, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
@@ -64,9 +64,35 @@ export default {
       // console.info(this)
     },
     validateLoginForm() {
-      console.info(this)
-      this.$refs.loginLoginFormRef.validate(validate => {
-        console.info(validate)
+      // console.info(this)
+      // 回调函数的第一个参数为数据验证是否通过，第二个参数为验证不通过的对象，也可以直接省略第二个参数
+      this.$refs.loginLoginFormRef.validate(async (valid) => {
+        if (valid) {
+          // await用来处理返回值是Promise的方法，它最外面的函数必须加async表示是异步的
+          const { data: res } = await this.$http.post('login', this.loginForm) // 大括号的作用为从返回结果中解构出data,重命名为res
+          if (res.meta.status !== 200) {
+            this.$message({
+              showClose: true,
+              message: '登录失败',
+              type: 'error'
+            })
+            console.info('登录失败')
+          } else {
+            this.$message({
+              showClose: true,
+              message: '登录成功',
+              type: 'success'
+            })
+            window.sessionStorage.setItem('toekn', res.data.token)
+            this.$router.push('/home')
+          }
+        } else {
+          this.$message({
+            showClose: true,
+            message: '表单信息有误',
+            type: 'error'
+          })
+        }
       })
     }
   }
