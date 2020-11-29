@@ -76,14 +76,13 @@ export default {
               message: '登录失败',
               type: 'error'
             })
-            console.info('登录失败')
           } else {
             this.$message({
               showClose: true,
               message: '登录成功',
               type: 'success'
             })
-            window.sessionStorage.setItem('toekn', res.data.token)
+            window.sessionStorage.setItem('token', res.data.token)
             this.$router.push('/home')
           }
         } else {
