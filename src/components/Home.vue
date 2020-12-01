@@ -11,13 +11,13 @@
     <!-- 页面主题区域 -->
     <el-container>
       <!-- 侧边栏 -->
-      <el-aside :width="isMenuCollapse ? '65px' : '200px'">
+      <el-aside :width="isMenuCollapse ? '65px' : '210px'">
         <!-- 侧边栏菜单区域 -->
         <div class="div_collapse" @click="collapseMenu">|||</div>
         <el-menu
           background-color="#545c64"
           text-color="#ffffff"
-          unique-opened="true"
+          :unique-opened="true"
           :collapse="isMenuCollapse"
           :collapse-transition="false"
           :router="true"
@@ -141,6 +141,7 @@ export default {
 }
 .el-main {
   background-color: aliceblue;
+  padding: 10px;
 }
 
 .el_container_outest {
