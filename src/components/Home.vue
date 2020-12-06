@@ -21,6 +21,8 @@
           :collapse="isMenuCollapse"
           :collapse-transition="false"
           :router="true"
+          :default-active="defaultActive"
+          ref="homeMenuRef"
         >
           <!-- 一级菜单 -->
           <el-submenu
@@ -40,6 +42,7 @@
               :index="'/' + subItem.path"
               v-for="subItem in item.children"
               :key="subItem.id"
+              @click="selectHandle(subItem.path)"
             >
               <template slot="title">
                 <!-- 图标 -->
@@ -73,7 +76,8 @@ export default {
         103: 'el-icon-lock',
         145: 'el-icon-data-line'
       },
-      isMenuCollapse: false // 菜单是否折叠
+      isMenuCollapse: false, // 菜单是否折叠
+      defaultActive: '' // 菜单默认选中项
     }
   },
   methods: {
@@ -103,6 +107,9 @@ export default {
     // 折叠与展开菜单
     collapseMenu() {
       this.isMenuCollapse = !this.isMenuCollapse
+    },
+    selectHandle(indexPath) {
+      this.defaultActive = '/' + indexPath
     }
   },
   created() {

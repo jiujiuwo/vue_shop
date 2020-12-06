@@ -2,7 +2,7 @@ import Vue from 'vue'
 import {
   Button, Form, FormItem, Input, Message, Container, Header, Aside, Main, Menu,
   MenuItem, Submenu, MenuItemGroup, Breadcrumb, BreadcrumbItem, Card, Row, Col,
-  Table, TableColumn, Pagination
+  Table, TableColumn, Pagination, Switch, Tooltip
 } from 'element-ui' // { }表示按需导入
 
 // 只写这一行，不要下面的似乎不起作用
@@ -26,5 +26,7 @@ Vue.use(Col)
 Vue.use(Table)
 Vue.use(TableColumn)
 Vue.use(Pagination)
+Vue.use(Switch)
+Vue.use(Tooltip)
 // Message组件需要挂载到Vue原型对象上
 Vue.prototype.$message = Message
