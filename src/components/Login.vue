@@ -61,6 +61,7 @@ export default {
     // 重置表单数据
     resetForm() {
       this.$refs.loginLoginFormRef.resetFields()
+      this.loginForm = {}
       // console.info(this)
     },
     validateLoginForm() {
