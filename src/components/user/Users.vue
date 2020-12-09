@@ -9,16 +9,28 @@
     <!-- 内容显示区，采用card组件显示 -->
     <el-card class="box-card">
       <!-- 搜索区域 -->
-      <el-row type="flex" :gutter="15">
-        <el-col :span="10">
-          <el-input placeholder="请输入内容" class="input-with-select">
-            <el-button
-              slot="append"
-              icon="el-icon-search"
-            ></el-button> </el-input
+      <el-row type="flex" :gutter="5">
+        <el-col :span="4">
+          <el-input
+            placeholder="请输入内容"
+            class="input-with-select"
+            :clearable="true"
+            v-model="paramForPageQuery.query"
+            @clear="queryPageData()"
+          ></el-input
         ></el-col>
-        <el-col :span="8">
-          <el-button type="primary">添加用户</el-button>
+        <el-col :span="1">
+          <el-button
+            icon="el-icon-search"
+            @click="queryPageData()"
+            clickable="true"
+            type="warning"
+          ></el-button>
+        </el-col>
+        <el-col :span="2">
+          <el-button type="primary" @click="addUserDialogVisible = true"
+            >添加用户</el-button
+          >
         </el-col>
       </el-row>
       <!-- 表格区域 -->
@@ -73,6 +85,42 @@
       >
       </el-pagination>
     </el-card>
+    <!-- 添加用户的对话框 -->
+    <el-dialog
+      title="添加用户"
+      :visible.sync="addUserDialogVisible"
+      width="30%"
+      @closed="addUserDialogClosed()"
+    >
+      <el-form
+        label-position="left"
+        label-width="80px"
+        :model="addUserFormVo"
+        :rules="rules"
+        ref="addUserFormRef"
+      >
+        <el-form-item label="用户名" prop="username">
+          <el-input v-model="addUserFormVo.username" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input
+            type="password"
+            v-model="addUserFormVo.password"
+            clearable
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="addUserFormVo.email" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="手机" prop="mobile">
+          <el-input v-model="addUserFormVo.mobile" clearable></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="addUserDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addUserConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -80,13 +128,55 @@
 export default {
   name: 'Users',
   data() {
+    var validateEmail = (rule, value, callback) => {
+      var pattern = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+      if (value === '') {
+        callback(new Error('请输入邮箱地址'))
+      } else if (pattern.test(value) <= 0) {
+        callback(new Error('邮箱地址有误!'))
+      } else {
+        callback()
+      }
+    }
+    var validateMobile = (rule, value, callback) => {
+      var pattern = /^(13[0-9]|14[5|7]|15[0|1|2|3|4|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/
+      if (value === '') {
+        callback(new Error('请输入手机号'))
+      } else if (pattern.test(value) <= 0) {
+        callback(new Error('手机号格式有误!'))
+      } else {
+        callback()
+      }
+    }
     return {
       tableData: [],
       totalSize: 0,
-      paramForPageQuery: { query: '', pagenum: 1, pagesize: 10 }
+      paramForPageQuery: { query: '', pagenum: 1, pagesize: 10 },
+      addUserDialogVisible: false, // 添加用户的弹出框
+      addUserFormVo: { username: '', password: '', email: '', mobile: '' },
+      // 表单的验证规则
+      rules: {
+        username: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          { min: 5, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { min: 5, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { validator: validateEmail, trigger: 'blur' }
+        ],
+        mobile: [
+          { required: true, message: '请输入手机号', trigger: 'blur' },
+          { validator: validateMobile, trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
+    // 查询用户列表数据
     async queryPageData() {
       const { data: res } = await this.$http.get('/users', {
         params: this.paramForPageQuery
@@ -108,6 +198,7 @@ export default {
       this.paramForPageQuery.pagenum = newPageNum
       this.queryPageData()
     },
+    // 监听用户状态改变
     async handleSwitchChange(userRow) {
       const { data: res } = await this.$http.put(
         `users/${userRow.id}/state/${userRow.mg_state}`
@@ -118,6 +209,41 @@ export default {
       } else {
         this.$message.success(res.meta.msg)
       }
+    },
+    // 添加用户的网络请求
+    async addUser() {
+      const { data: res } = await this.$http.post('users', this.addUserFormVo)
+      if (res.meta.status === 201) {
+        // 添加成功
+        this.$message.success(res.meta.msg)
+        this.addUserDialogVisible = false
+        this.queryPageData()
+      } else {
+        this.$message.error(res.meta.msg)
+      }
+    },
+    // 添加用户二次确认
+    addUserConfirm() {
+      this.$refs.addUserFormRef.validate((pass, obj) => {
+        if (pass) {
+          this.$confirm('确认添加用户？', '添加确认', {
+            confirmButtonText: '确认',
+            cancleButtonText: '取消'
+          })
+            .then(() => {
+              this.addUser()
+            })
+            .catch(() => {
+              this.$message.info('取消添加')
+            })
+        } else {
+          this.$message.error('表单信息有误')
+        }
+      })
+    },
+    // 关闭对话框后调用方法重置表单
+    addUserDialogClosed() {
+      this.$refs.addUserFormRef.resetFields()
     }
   },
   created() {

@@ -27,7 +27,7 @@
         </el-form-item>
         <el-form-item class="login_form_btn">
           <el-button type="primary" @click="validateLoginForm">提交</el-button>
-          <el-button @click="resetForm">重置</el-button>
+          <el-button @click="resetForm()">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -41,8 +41,8 @@ export default {
     return {
       // 表单数据绑定对象
       loginForm: {
-        username: 'admin  ',
-        password: '123456'
+        username: '',
+        password: ''
       },
       // 表单验证规则对象
       loginLoginFormRules: {
@@ -61,7 +61,6 @@ export default {
     // 重置表单数据
     resetForm() {
       this.$refs.loginLoginFormRef.resetFields()
-      this.loginForm = {}
       // console.info(this)
     },
     validateLoginForm() {
