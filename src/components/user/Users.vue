@@ -19,7 +19,7 @@
             @clear="queryPageData()"
           ></el-input
         ></el-col>
-        <el-col :span="1">
+        <el-col :span="2">
           <el-button
             icon="el-icon-search"
             @click="queryPageData()"
