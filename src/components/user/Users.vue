@@ -25,17 +25,6 @@
               slot="append"
             ></el-button></el-input
         ></el-col>
-<<<<<<< HEAD
-=======
-        <el-col :span="2">
-          <el-button
-            icon="el-icon-search"
-            @click="queryPageData()"
-            clickable="true"
-            type="warning"
-          ></el-button>
-        </el-col>
->>>>>>> 30972277c115d50cc32aee8568ca9b770a7907d6
         <el-col :span="2">
           <el-button type="primary" @click="addUserDialogVisible = true"
             >添加用户</el-button
