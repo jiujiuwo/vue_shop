@@ -377,10 +377,11 @@ export default {
 }
 .el-breadcrumb {
   margin-bottom: 10px;
+  padding: 3px;
 }
 .box-card {
   margin-left: 0px;
-  height: 100%;
+  padding: 10px;
 }
 .el-table {
   margin-top: 20px;
@@ -390,7 +391,7 @@ export default {
   margin-top: 20px;
 }
 
-.input-search-btn:hover {
+.input-search-btn:active {
   background-color: #bbbbbb;
 }
 </style>

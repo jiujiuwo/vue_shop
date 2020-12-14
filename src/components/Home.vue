@@ -42,7 +42,7 @@
               :index="'/' + subItem.path"
               v-for="subItem in item.children"
               :key="subItem.id"
-              @click="selectHandle(subItem.path)"
+              @click="activeHandle(subItem.path)"
             >
               <template slot="title">
                 <!-- 图标 -->
@@ -108,7 +108,7 @@ export default {
     collapseMenu() {
       this.isMenuCollapse = !this.isMenuCollapse
     },
-    selectHandle(indexPath) {
+    activeHandle(indexPath) {
       this.defaultActive = '/' + indexPath
     }
   },
