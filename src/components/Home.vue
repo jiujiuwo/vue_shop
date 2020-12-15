@@ -90,19 +90,13 @@ export default {
     async getMenuList() {
       const { data: result } = await this.$http.get('/menus')
       if (result.meta.status !== 200) {
-        this.$message({
+        return this.$message({
           message: result.meta.msg,
           showClose: true,
           type: 'error'
         })
-      } else {
-        this.menuList = result.data
-        this.$message({
-          type: 'success',
-          message: '获取菜单数据成功',
-          showClose: true
-        })
       }
+      this.menuList = result.data
     },
     // 折叠与展开菜单
     collapseMenu() {
@@ -149,6 +143,7 @@ export default {
 .el-main {
   background-color: aliceblue;
   padding: 10px;
+  overflow: hidden;
 }
 
 .el_container_outest {

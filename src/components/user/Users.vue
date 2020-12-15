@@ -390,7 +390,6 @@ export default {
 .el-pagination {
   margin-top: 20px;
 }
-
 .input-search-btn:active {
   background-color: #bbbbbb;
 }
