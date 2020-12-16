@@ -79,7 +79,7 @@
               type="primary"
               icon="el-icon-edit"
               size="mini"
-              @click="editRoleAuth(scope.row.id)"
+              @click="editRole(scope.row.id)"
               >编辑</el-button
             ><el-button type="danger" icon="el-icon-delete" size="mini"
               >删除</el-button
@@ -90,13 +90,56 @@
         </el-table-column>
       </el-table>
     </el-card>
+    <!-- 编辑角色对话框 -->
+    <el-dialog
+      title="编辑角色"
+      :visible.sync="editRoleDialogVisible"
+      width="50%"
+      @closed="editRoleDialogClosed()"
+    >
+      <el-form
+        label-position="left"
+        label-width="80px"
+        :model="editRoleFormVo"
+        :rules="editRoleFormRules"
+        ref="editRoleFormRef"
+      >
+        <el-form-item label="角色id">
+          <el-input v-model="editRoleFormVo.roleId" disabled></el-input>
+        </el-form-item>
+        <el-form-item label="角色名称" prop="roleName">
+          <el-input v-model="editRoleFormVo.roleName" clearable></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述" prop="roleDesc">
+          <el-input v-model="editRoleFormVo.roleDesc" clearable></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="editRoleDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="editRoleConfirm()">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
 export default {
   name: 'Role',
   data() {
-    return { roleList: [] }
+    return {
+      roleList: [],
+      editRoleDialogVisible: false,
+      editRoleFormVo: {},
+      editRoleFormRules: {
+        roleName: [
+          { required: true, message: '请输入角色名称', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+        ],
+        roleDesc: [
+          { required: true, message: '请输入角色描述', trigger: 'blur' },
+          { min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur' }
+        ]
+      }
+    }
   },
   methods: {
     async getRolesData() {
@@ -105,6 +148,46 @@ export default {
         return this.$message.error(res.meta.msg)
       }
       this.roleList = res.data
+    },
+    async editRole(roleId) {
+      const { data: res } = await this.$http.get('roles/' + roleId)
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      this.editRoleFormVo = res.data
+      this.editRoleDialogVisible = true
+    },
+    editRoleDialogClosed() {
+      this.editRoleFormVo = {}
+    },
+    editRoleConfirm() {
+      this.$refs.editRoleFormRef.validate((pass, object) => {
+        if (!pass) {
+          return this.$message.error('表单信息有误')
+        }
+        this.$confirm('确认修改角色信息？', '修改确认', {
+          conformButtonText: '确认',
+          cancelButtonText: '取消'
+        })
+          .then(() => {
+            this.editRoleRequest()
+          })
+          .catch(() => {
+            this.$message.info('取消修改')
+          })
+      })
+    },
+    async editRoleRequest() {
+      const { data: res } = await this.$http.put(
+        'roles/' + this.editRoleFormVo.roleId,
+        this.editRoleFormVo
+      )
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      this.$message.success(res.meta.msg)
+      this.editRoleDialogVisible = false
+      this.getRolesData()
     }
   },
   created() {

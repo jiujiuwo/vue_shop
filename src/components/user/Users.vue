@@ -151,7 +151,6 @@
         <el-form-item label="用户名">
           <el-input
             v-model="editUserFormVo.username"
-            clearable
             :disabled="true"
           ></el-input>
         </el-form-item>
@@ -314,7 +313,6 @@ export default {
             })
             .catch(() => {
               this.$message.info('取消修改')
-              this.editUserDialogVisible = false
             })
         } else {
           this.$message.error('表单信息有误')
