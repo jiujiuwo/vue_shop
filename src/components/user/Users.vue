@@ -79,6 +79,7 @@
                 type="warning"
                 icon="el-icon-setting"
                 circle
+                @click="assignRoleDialogShow(scope.row.id)"
               ></el-button> </el-tooltip
           ></template>
         </el-table-column>
@@ -134,6 +135,7 @@
         <el-button type="primary" @click="addUserConfirm">确 定</el-button>
       </span>
     </el-dialog>
+
     <!-- 修改用户信息对话框 -->
     <el-dialog
       title="修改用户信息"
@@ -164,6 +166,28 @@
       <span slot="footer" class="dialog-footer">
         <el-button @click="editUserDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="editUserConfirm()">确 定</el-button>
+      </span>
+    </el-dialog>
+
+    <!-- 分配用户角色对话框 -->
+    <el-dialog
+      title="指定角色"
+      :visible.sync="assignRoleDialogVisiable"
+      width="30%"
+      @closed="assignRoleDialogClosed()"
+    >
+      <el-select v-model="assignRoleId" placeholder="请选择角色">
+        <el-option
+          v-for="item in roleListData"
+          :key="item.id"
+          :label="item.roleName"
+          :value="item.id"
+        >
+        </el-option>
+      </el-select>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="assignRoleDialogVisiable = false">取 消</el-button>
+        <el-button type="primary" @click="assignRoleRequest()">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -219,7 +243,11 @@ export default {
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { validator: validateMobile, trigger: 'blur' }
         ]
-      }
+      },
+      assignRoleDialogVisiable: false,
+      assignRoleUserId: '',
+      assignRoleId: '',
+      roleListData: []
     }
   },
   methods: {
@@ -360,6 +388,32 @@ export default {
       } else {
         this.$message.error(res.meta.msg)
       }
+    },
+    async assignRoleDialogShow(assignUserId) {
+      this.assignRoleUserId = assignUserId
+      const { data: res } = await this.$http.get('roles')
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      this.roleListData = res.data
+      this.assignRoleDialogVisiable = true
+    },
+    assignRoleDialogClosed() {
+      this.assignRoleUserId = ''
+      this.assignRoleId = ''
+      this.roleListData = []
+    },
+    async assignRoleRequest() {
+      const { data: res } = await this.$http.put(
+        'users/' + this.assignRoleUserId + '/role',
+        { id: this.assignRoleUserId, rid: this.assignRoleId }
+      )
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      this.$message.success(res.meta.msg)
+      this.queryPageData()
+      this.assignRoleDialogVisiable = false
     }
   },
   created() {
