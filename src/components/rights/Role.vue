@@ -28,9 +28,11 @@
             >
               <!-- 渲染一级权限 -->
               <el-col :span="4"
-                ><el-tag type="primary" :closable="true">{{
-                  child.authName
-                }}</el-tag
+                ><el-tag
+                  type="primary"
+                  :closable="true"
+                  @close="deleteRight(scope.row, child.id)"
+                  >{{ child.authName }}</el-tag
                 ><i class="el-icon-caret-right"></i
               ></el-col>
               <!-- 渲染二级和三级权限 -->
@@ -45,9 +47,11 @@
                 >
                   <!-- 二级权限 -->
                   <el-col :span="6"
-                    ><el-tag type="warning" :closable="true">{{
-                      child1.authName
-                    }}</el-tag
+                    ><el-tag
+                      type="warning"
+                      :closable="true"
+                      @close="deleteRight(scope.row, child1.id)"
+                      >{{ child1.authName }}</el-tag
                     ><i class="el-icon-caret-right"></i></el-col
                   ><el-col :span="18"
                     ><el-row
@@ -59,9 +63,12 @@
                     >
                       <!-- 三级权限 -->
                       <el-col :span="18"
-                        ><el-tag type="success" :closable="true">{{
-                          child2.authName
-                        }}</el-tag></el-col
+                        ><el-tag
+                          type="success"
+                          :closable="true"
+                          @close="deleteRight(scope.row, child2.id)"
+                          >{{ child2.authName }}</el-tag
+                        ></el-col
                       ></el-row
                     ></el-col
                   ></el-row
@@ -353,6 +360,7 @@ export default {
     },
     async distributeRightsRequest() {
       var newRights = [
+        // 必须是全选的叶子节点加上半选的节点才是所有被选中的节点
         ...this.$refs.distributeRightsTreeRef.getCheckedKeys(),
         ...this.$refs.distributeRightsTreeRef.getHalfCheckedKeys()
       ]
@@ -368,6 +376,16 @@ export default {
       this.$message.success(res.meta.msg)
       this.distributeRightsDialogVisible = false
       this.getRolesData()
+    },
+    async deleteRight(row, rightId) {
+      const { data: res } = await this.$http.delete(
+        `roles/${row.id}/rights/${rightId}`
+      )
+      if (res.meta.status !== 200) {
+        return this.$message.error(res.meta.msg)
+      }
+      row.children = res.data
+      this.$message.success(res.meta.msg)
     }
   },
   created() {
