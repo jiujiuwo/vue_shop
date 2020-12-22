@@ -2,7 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import './plugins/element.js'
-
+// 使用树形列表组件
+import ZkTable from 'vue-table-with-tree-grid'
 // 导入全局样式
 import './assets/css/global.css'
 
@@ -33,3 +34,6 @@ new Vue({
   router,
   render: h => h(App)
 }).$mount('#app')
+
+Vue.use(ZkTable)
+Vue.component(ZkTable.name, ZkTable)

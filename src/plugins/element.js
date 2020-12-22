@@ -33,6 +33,7 @@ Vue.use(Tag)
 Vue.use(Tree)
 Vue.use(Option)
 Vue.use(Select)
+
 // Vue.use(MessageBox)错误的引用方法，导致刷新时一直出现messagebox
 Vue.component(MessageBox.name, MessageBox) // 使用这种方法引用
 // Message组件需要挂载到Vue原型对象上
