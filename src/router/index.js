@@ -6,6 +6,9 @@ import Welcome from '@/components/Welcome.vue'
 import User from '@/components/user/Users.vue'
 import Rights from '@/components/rights/Rights.vue'
 import Role from '@/components/rights/Role.vue'
+import CataParam from '@/components/goods/CataParam.vue'
+import GoodCata from '@/components/goods/GoodCata.vue'
+import GoodList from '@/components/goods/GoodList.vue'
 
 Vue.use(VueRouter)
 
@@ -21,8 +24,9 @@ const routes = [
       { path: '/users', component: User },
       { path: '/roles', component: Role },
       { path: '/rights', component: Rights },
-      { path: '/users', component: User },
-      { path: '/users', component: User }
+      { path: '/goods', component: GoodList },
+      { path: '/categories', component: GoodCata },
+      { path: '/params', component: CataParam }
     ]
   }
 ]

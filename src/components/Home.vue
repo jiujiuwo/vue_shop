@@ -141,7 +141,7 @@ export default {
   }
 }
 .el-main {
-  background-color: aliceblue;
+  background-color: transparent;
   padding: 10px;
   overflow: hidden;
 }
